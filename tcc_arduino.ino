@@ -5,9 +5,9 @@
 #include <SPI.h>
 
 // SSID of your network
-char ssid[] = "SSID"; 
+String ssid = "[ssid]"; 
 // Password of your WPA network (or empty for open networks)
-char pass[] = "Password"; 
+String pass = "[pass]";
 
 // Wi-Fi status variable
 int status = WL_IDLE_STATUS;
@@ -15,7 +15,7 @@ int status = WL_IDLE_STATUS;
 // Pin for reading temperature input
 const int sensorPin = A0;
 // Server url where we publish each readout
-const char* serverUrl = "http://localhost:5184/Temperature";
+const String serverUrl = "http://ei40tccservice20251116142403.azurewebsites.net/Temperature";
 
 void setup() {
   Serial.begin(9600);
@@ -25,7 +25,7 @@ void setup() {
 void loop() {
   float temperature = readTemperature();
   sendReading(temperature);
-  delay(5000); // Send every 5 seconds
+  delay(1000); // Send every 1 seconds
 }
 
 void connectToWiFi() {
