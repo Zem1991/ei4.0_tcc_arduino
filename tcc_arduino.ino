@@ -1,5 +1,4 @@
 // Include the Wi-Fi and Http libraries
-#include <WiFiClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 // Required for some Wi-Fi modules/shields
@@ -12,14 +11,13 @@ char pass[] = "Password";
 
 // Wi-Fi status variable
 int status = WL_IDLE_STATUS;
-// Declare a WiFiClient object globally or within the scope of your function
-WiFiClient wifiClient;
 
+// Pin for reading temperature input
 const int sensorPin = A0;
-const char* serverUrl = "http://your.api.endpoint/temperature";
+// Server url where we publish each readout
+const char* serverUrl = "http://localhost:5184/Temperature";
 
 void setup() {
-  //Serial.begin(115200);
   Serial.begin(9600);
   connectToWiFi();
 }
@@ -27,7 +25,7 @@ void setup() {
 void loop() {
   float temperature = readTemperature();
   sendReading(temperature);
-  delay(1000); // Send every 1 seconds
+  delay(5000); // Send every 5 seconds
 }
 
 void connectToWiFi() {
@@ -80,10 +78,11 @@ float readTemperature() {
 
 void sendReading(float temperature) {
   if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
     HTTPClient http;
-    http.begin(wifiClient, serverUrl);
+    http.begin(client, serverUrl);
     http.addHeader("Content-Type", "application/json");
-    String payload = "{\"temperature\":" + String(temperature) + "}";
+    String payload = "{\"value\":" + String(temperature) + "}";
     int httpResponseCode = http.POST(payload);
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
